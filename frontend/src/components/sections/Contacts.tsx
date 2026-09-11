@@ -186,13 +186,13 @@ export default function Contacts() {
   const isSubmitting = status.state === "submitting";
 
   return (
-    <section id="contacts" ref={sectionRef} className="bg-base py-16 sm:py-24">
+    <section id="contacts" ref={sectionRef} className="bg-base py-14 sm:py-24">
       <div className="container">
         <Reveal className="mb-12 max-w-2xl">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-primary">
             Контакты
           </p>
-          <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+          <h2 className="text-[1.65rem] font-black tracking-tight text-foreground sm:text-3xl md:text-4xl">
             Обсудим вашу задачу
           </h2>
           <p className="mt-4 text-base text-muted sm:text-lg">
@@ -213,7 +213,7 @@ export default function Contacts() {
                   </h3>
                   <a
                     href={item.href}
-                    className="mt-1 block text-lg font-bold text-foreground transition-colors hover:text-primary"
+                    className="mt-1 inline-flex min-h-11 items-center text-lg font-bold text-foreground transition-colors hover:text-primary"
                   >
                     {item.value}
                   </a>
@@ -227,7 +227,7 @@ export default function Contacts() {
             <form
               ref={formRef}
               onSubmit={onSubmit}
-              className="rounded-2xl border border-line bg-surface p-6 sm:p-8"
+              className="rounded-2xl border border-line bg-surface p-5 sm:p-8"
             >
               {/* UTM-метки передаются в CRM вместе с заявкой */}
               {UTM_KEYS.map((key) => (
@@ -254,7 +254,7 @@ export default function Contacts() {
                     required
                     autoComplete="name"
                     placeholder="Как к вам обращаться"
-                    className="w-full rounded-xl border border-line bg-deep px-4 py-3 text-sm text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
+                    className="min-h-12 w-full rounded-xl border border-line bg-deep px-4 py-3 text-base text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
                   />
                 </div>
                 <div>
@@ -274,7 +274,7 @@ export default function Contacts() {
                         event.currentTarget.value,
                       );
                     }}
-                    className="w-full rounded-xl border border-line bg-deep px-4 py-3 text-sm text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
+                    className="min-h-12 w-full rounded-xl border border-line bg-deep px-4 py-3 text-base text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
                   />
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function Contacts() {
                   required
                   autoComplete="email"
                   placeholder="name@company.ru"
-                  className="w-full rounded-xl border border-line bg-deep px-4 py-3 text-sm text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
+                  className="min-h-12 w-full rounded-xl border border-line bg-deep px-4 py-3 text-base text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
                 />
               </div>
               <div className="mt-4">
@@ -302,7 +302,7 @@ export default function Contacts() {
                   required
                   rows={5}
                   placeholder="Кратко опишите проект или вопрос"
-                  className="w-full resize-none rounded-xl border border-line bg-deep px-4 py-3 text-sm text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
+                  className="w-full resize-none rounded-xl border border-line bg-deep px-4 py-3 text-base text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
                 />
               </div>
 
@@ -324,7 +324,7 @@ export default function Contacts() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-deep transition-all duration-200 hover:-translate-y-0.5 hover:bg-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-deep transition-all duration-200 hover:-translate-y-0.5 hover:bg-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
                 {isSubmitting ? "Отправляем…" : "Отправить заявку"}
               </button>

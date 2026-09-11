@@ -6,13 +6,13 @@ import { services } from "@/data/services";
 
 export default function Services() {
   return (
-    <section id="services" className="bg-base py-16 sm:py-24">
+    <section id="services" className="bg-base py-14 sm:py-24">
       <div className="container">
         <Reveal className="mb-12 max-w-2xl">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-primary">
             Услуги
           </p>
-          <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+          <h2 className="text-[1.65rem] font-black tracking-tight text-foreground sm:text-3xl md:text-4xl">
             Единое окно к цифровым услугам
           </h2>
           <p className="mt-4 text-base text-muted sm:text-lg">
@@ -27,7 +27,7 @@ export default function Services() {
               <Reveal delay={(index % 3) * 90} className="h-full">
                 <Link
                   href={`/services/${service.slug}`}
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="group flex h-full min-h-[44px] flex-col rounded-2xl border border-line bg-surface p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-6"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/12 text-primary transition-colors duration-300 group-hover:bg-primary/20">

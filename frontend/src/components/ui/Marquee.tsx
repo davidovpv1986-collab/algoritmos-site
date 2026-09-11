@@ -26,18 +26,18 @@ export default function Marquee() {
   );
 
   return (
-    <div className="group relative overflow-hidden border-y border-line/70 bg-deep py-4">
+    <div className="group relative overflow-hidden border-y border-line/70 bg-deep py-3 sm:py-4">
       <div className="flex w-max group-hover:[animation-play-state:paused]">
         {track(false)}
         {track(true)}
       </div>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-deep to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-deep to-transparent sm:w-24"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-deep to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-deep to-transparent sm:w-24"
       />
     </div>
   );

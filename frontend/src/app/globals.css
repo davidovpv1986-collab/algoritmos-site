@@ -20,15 +20,71 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(4.75rem + env(safe-area-inset-top, 0px));
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: calc(5.75rem + env(safe-area-inset-top, 0px));
+  }
 }
 
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
   background: rgb(var(--deep));
   color: rgb(var(--text));
   font-family: "Roboto", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: rgb(45 168 164 / 0.18);
+  overflow-wrap: break-word;
+}
+
+a,
+button,
+summary {
+  touch-action: manipulation;
+}
+
+/* Якорные секции не прячутся под фиксированную шапку */
+[id] {
+  scroll-margin-top: calc(4.75rem + env(safe-area-inset-top, 0px));
+}
+
+@media (min-width: 768px) {
+  [id] {
+    scroll-margin-top: calc(5.75rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+/* iOS не зумит страницу при фокусе в поле — шрифт ≥ 16px */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Низкий портрет (SE / compact): меньше 3D — больше текста на первом экране */
+@media (max-height: 720px) {
+  .hero-visual {
+    height: min(26svh, 168px) !important;
+  }
+}
+
+/* Короткий ландшафт (телефон на боку): убираем 3D, чтобы контент помещался */
+@media (max-height: 520px) and (orientation: landscape) {
+  .hero-visual {
+    display: none !important;
+  }
+
+  .hero-section {
+    min-height: auto;
+  }
 }
 
 ::selection {

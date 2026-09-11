@@ -8,12 +8,12 @@ export default function Footer() {
   const { contacts } = siteConfig;
 
   return (
-    <footer className="border-t border-line bg-deep">
-      <div className="container py-12">
+    <footer className="border-t border-line bg-deep pb-[env(safe-area-inset-bottom)]">
+      <div className="container py-10 sm:py-12">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
             <Link href="/" aria-label="Алгоритмос — на главную" className="inline-block text-light">
-              <Logo className="h-8 w-auto" />
+              <Logo className="h-7 w-auto max-w-[min(70vw,14rem)] sm:h-8 sm:max-w-none" />
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
               {siteConfig.slogan}. Цифровые решения полного цикла для бизнеса
@@ -47,7 +47,7 @@ export default function Footer() {
               <p>
                 <a
                   href={contacts.emailHref}
-                  className="text-foreground transition-colors hover:text-primary"
+                  className="break-all text-foreground transition-colors hover:text-primary"
                 >
                   {contacts.email}
                 </a>

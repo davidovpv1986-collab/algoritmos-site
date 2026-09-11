@@ -48,13 +48,13 @@ const reasons = [
 
 export default function WhyUs() {
   return (
-    <section id="why-us" className="bg-deep py-16 sm:py-24">
+    <section id="why-us" className="bg-deep py-14 sm:py-24">
       <div className="container">
         <Reveal className="mb-12 max-w-2xl">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-primary">
             Почему мы
           </p>
-          <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+          <h2 className="text-[1.65rem] font-black tracking-tight text-foreground sm:text-3xl md:text-4xl">
             Экспертность. Структура. Надёжность.
           </h2>
           <p className="mt-4 text-base text-muted sm:text-lg">
@@ -66,7 +66,7 @@ export default function WhyUs() {
           {reasons.map((reason, index) => (
             <li key={reason.title} className="h-full">
               <Reveal delay={(index % 3) * 90} className="h-full">
-                <div className="flex h-full gap-4 rounded-2xl border border-line bg-surface p-6 transition-colors duration-300 hover:border-aqua/60">
+                <div className="flex h-full gap-4 rounded-2xl border border-line bg-surface p-5 transition-colors duration-300 hover:border-aqua/60 sm:p-6">
                   <span
                     aria-hidden="true"
                     className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-primary"

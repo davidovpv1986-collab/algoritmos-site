@@ -88,7 +88,7 @@ export default async function ServicePage({ params }: PageProps) {
       />
 
       {/* Шапка страницы */}
-      <section className="relative isolate overflow-hidden bg-deep pb-14 pt-28 md:pt-36">
+      <section className="relative isolate overflow-hidden bg-deep pb-12 pt-[calc(6.5rem+env(safe-area-inset-top))] sm:pb-14 md:pt-[calc(9rem+env(safe-area-inset-top))]">
         <div
           aria-hidden="true"
           className="absolute inset-0 -z-10"
@@ -127,7 +127,7 @@ export default async function ServicePage({ params }: PageProps) {
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
                 Направление {String(index + 1).padStart(2, "0")} / {String(services.length).padStart(2, "0")}
               </p>
-              <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              <h1 className="mt-3 max-w-3xl text-[1.7rem] font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
                 {service.title}
               </h1>
             </div>
@@ -172,7 +172,7 @@ export default async function ServicePage({ params }: PageProps) {
           </Reveal>
 
           <Reveal className="lg:col-span-5" delay={120}>
-            <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/12 to-transparent p-7 lg:sticky lg:top-28">
+            <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/12 to-transparent p-5 sm:p-7 lg:sticky lg:top-28">
               <h2 className="text-xl font-bold text-foreground">Результат для вас</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">
                 {service.outcome}
@@ -202,23 +202,23 @@ export default async function ServicePage({ params }: PageProps) {
         <div className="container grid gap-px overflow-hidden py-0 sm:grid-cols-2">
           <Link
             href={`/services/${prev.slug}`}
-            className="group px-2 py-7 transition-colors hover:bg-surface sm:px-6"
+            className="group min-h-[5.5rem] px-1 py-6 transition-colors hover:bg-surface sm:px-6 sm:py-7"
           >
             <span className="text-xs uppercase tracking-[0.18em] text-muted">
               ← Предыдущее направление
             </span>
-            <span className="mt-2 block text-lg font-bold text-foreground transition-colors group-hover:text-primary">
+            <span className="mt-2 block text-base font-bold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-lg">
               {prev.title}
             </span>
           </Link>
           <Link
             href={`/services/${next.slug}`}
-            className="group px-2 py-7 text-left transition-colors hover:bg-surface sm:px-6 sm:text-right"
+            className="group min-h-[5.5rem] px-1 py-6 text-left transition-colors hover:bg-surface sm:px-6 sm:py-7 sm:text-right"
           >
             <span className="text-xs uppercase tracking-[0.18em] text-muted">
               Следующее направление →
             </span>
-            <span className="mt-2 block text-lg font-bold text-foreground transition-colors group-hover:text-primary">
+            <span className="mt-2 block text-base font-bold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-lg">
               {next.title}
             </span>
           </Link>

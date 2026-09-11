@@ -60,6 +60,7 @@ export const viewport: Viewport = {
   themeColor: "#05121A",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 /** Schema.org: Organization + WebSite */

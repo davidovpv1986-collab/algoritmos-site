@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import Logo from "@/components/ui/Logo";
-import { navLinks } from "@/data/site";
+import { navLinks, siteConfig } from "@/data/site";
 import { reachGoal, goals } from "@/lib/analytics";
 
 /** Секции, за которыми следит подсветка активного пункта меню. */
@@ -53,6 +53,11 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
+  /* Смена страницы закрывает меню */
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
   const linkClass = (href: string) => {
     const id = href.split("#")[1];
     const active = isHome && activeSection === id;
@@ -63,20 +68,20 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top)] transition-colors duration-300 ${
         scrolled || isMenuOpen
-          ? "border-line/70 bg-deep/85 backdrop-blur-md"
+          ? "border-line/70 bg-deep/90 backdrop-blur-md"
           : "border-transparent bg-transparent"
       }`}
     >
-      <div className="container flex h-16 items-center justify-between gap-6 md:h-20">
+      <div className="container flex h-14 items-center justify-between gap-3 sm:h-16 sm:gap-6 md:h-20">
         <Link
           href="/"
           aria-label="Алгоритмос — на главную"
-          className="shrink-0 text-light transition-opacity hover:opacity-85"
+          className="min-w-0 shrink text-light transition-opacity hover:opacity-85"
           onClick={() => setIsMenuOpen(false)}
         >
-          <Logo className="h-7 w-auto md:h-8" />
+          <Logo className="h-6 w-auto max-w-[min(52vw,11.5rem)] sm:h-7 sm:max-w-none md:h-8" />
         </Link>
 
         <nav aria-label="Основная навигация" className="hidden items-center gap-7 text-sm text-muted lg:flex">
@@ -95,7 +100,16 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <a
+            href={siteConfig.contacts.phoneHref}
+            aria-label={`Позвонить ${siteConfig.contacts.phone}`}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line text-foreground transition-colors hover:border-primary/50 hover:text-primary sm:hidden"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+          </a>
           <Link
             href="/#contacts"
             onClick={() => reachGoal(goals.ctaClick)}
@@ -104,7 +118,8 @@ export default function Header() {
             Обсудить проект
           </Link>
           <button
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-foreground transition-colors hover:border-primary/50 lg:hidden"
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line text-foreground transition-colors hover:border-primary/50 lg:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
             aria-expanded={isMenuOpen}
@@ -123,13 +138,16 @@ export default function Header() {
       </div>
 
       {isMenuOpen && (
-        <nav aria-label="Мобильная навигация" className="max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-line/70 bg-deep/95 backdrop-blur-md lg:hidden">
-          <div className="container flex flex-col gap-1 py-4">
+        <nav
+          aria-label="Мобильная навигация"
+          className="max-h-[calc(100svh-3.5rem-env(safe-area-inset-top))] overflow-y-auto border-t border-line/70 bg-deep/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+        >
+          <div className="container flex flex-col gap-1 py-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-lg px-3 py-3 text-base text-foreground transition-colors hover:bg-surface"
+                className="min-h-12 rounded-lg px-3 py-3.5 text-base text-foreground transition-colors hover:bg-surface"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
@@ -137,7 +155,7 @@ export default function Header() {
             ))}
             <Link
               href="/#contacts"
-              className="mt-2 rounded-full bg-primary px-5 py-3 text-center text-sm font-bold text-deep"
+              className="mt-2 min-h-12 rounded-full bg-primary px-5 py-3.5 text-center text-sm font-bold text-deep"
               onClick={() => {
                 reachGoal(goals.ctaClick);
                 setIsMenuOpen(false);

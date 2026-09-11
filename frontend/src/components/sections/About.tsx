@@ -9,14 +9,14 @@ const facts = [
 
 export default function About() {
   return (
-    <section id="about" className="bg-base py-16 sm:py-24">
+    <section id="about" className="bg-base py-14 sm:py-24">
       <div className="container">
         <div className="grid items-start gap-10 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-primary">
               О компании
             </p>
-            <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+            <h2 className="text-[1.65rem] font-black tracking-tight text-foreground sm:text-3xl md:text-4xl">
               Синергия технологий и стратегического подхода
             </h2>
             <p className="mt-6 text-base leading-relaxed text-muted sm:text-lg">
@@ -37,8 +37,8 @@ export default function About() {
           <Reveal className="lg:col-span-5" delay={120}>
             <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line">
               {facts.map((item) => (
-                <div key={item.label} className="bg-surface p-6">
-                  <dd className="block text-3xl font-black text-light">
+                <div key={item.label} className="bg-surface p-4 sm:p-6">
+                  <dd className="block text-2xl font-black text-light sm:text-3xl">
                     {item.value}
                   </dd>
                   <dt className="mt-2 block text-xs leading-snug text-muted">

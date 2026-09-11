@@ -44,7 +44,7 @@ const sections = [
 export default function PrivacyPage() {
   return (
     <div className="bg-base">
-      <section className="relative isolate overflow-hidden bg-deep pb-12 pt-28 md:pt-36">
+      <section className="relative isolate overflow-hidden bg-deep pb-12 pt-[calc(6.5rem+env(safe-area-inset-top))] md:pt-[calc(9rem+env(safe-area-inset-top))]">
         <div
           aria-hidden="true"
           className="absolute inset-0 -z-10"
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           }}
         />
         <div className="container">
-          <h1 className="max-w-3xl text-3xl font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          <h1 className="max-w-3xl text-[1.7rem] font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             Политика конфиденциальности
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
             {sections.map((section) => (
               <article
                 key={section.title}
-                className="rounded-2xl border border-line bg-surface p-6 sm:p-8"
+                className="rounded-2xl border border-line bg-surface p-5 sm:p-8"
               >
                 <h2 className="text-lg font-bold text-foreground">
                   {section.title}

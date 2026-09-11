@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="relative isolate flex min-h-[80svh] items-center overflow-hidden bg-deep">
+    <div className="relative isolate flex min-h-[80svh] items-center overflow-hidden bg-deep pt-[calc(3.5rem+env(safe-area-inset-top))]">
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10"
@@ -12,27 +12,27 @@ export default function NotFound() {
         }}
       />
       <div aria-hidden="true" className="grid-lines absolute inset-0 -z-10 opacity-30" />
-      <div className="container py-24">
+      <div className="container py-20 sm:py-24">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
           Ошибка 404
         </p>
-        <h1 className="mt-4 max-w-2xl text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mt-4 max-w-2xl text-[1.7rem] font-black tracking-tight text-foreground sm:text-4xl md:text-5xl">
           Такой страницы нет. Но алгоритм найти её у нас есть.
         </h1>
         <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
           Возможно, страница была перемещена или адрес введён с опечаткой.
           Вернитесь на главную или сразу расскажите нам о своей задаче.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-deep transition-all duration-200 hover:-translate-y-0.5 hover:bg-light"
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-deep transition-all duration-200 hover:-translate-y-0.5 hover:bg-light sm:w-auto"
           >
             На главную
           </Link>
           <Link
             href="/#contacts"
-            className="inline-flex items-center justify-center rounded-full border border-line px-7 py-3.5 text-sm font-bold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-muted hover:bg-surface"
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-line px-7 py-3.5 text-sm font-bold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-muted hover:bg-surface sm:w-auto"
           >
             Связаться с нами
           </Link>

@@ -18,12 +18,14 @@ export default function OrbitScene() {
     const mount = mountRef.current;
     if (!mount) return;
 
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
         alpha: true,
-        antialias: true,
-        powerPreference: "high-performance",
+        antialias: !isMobile,
+        powerPreference: isMobile ? "low-power" : "high-performance",
       });
     } catch {
       setWebglFailed(true);
@@ -34,7 +36,10 @@ export default function OrbitScene() {
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     camera.position.set(0, 0, 10);
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.25 : 1.8));
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -44,7 +49,14 @@ export default function OrbitScene() {
     root.rotation.set(-0.12, 0.25, -0.08);
     scene.add(root);
 
-    const knotGeometry = new THREE.TorusKnotGeometry(2.65, 0.62, 280, 52, 2, 3);
+    const knotGeometry = new THREE.TorusKnotGeometry(
+      2.65,
+      0.62,
+      isMobile ? 140 : 280,
+      isMobile ? 28 : 52,
+      2,
+      3,
+    );
     const knotMaterial = new THREE.MeshPhysicalMaterial({
       color: "#2E7F86",
       emissive: new THREE.Color("#17918E"),
@@ -79,7 +91,7 @@ export default function OrbitScene() {
     const core = new THREE.Mesh(coreGeometry, coreMaterial);
     root.add(core);
 
-    const pointsCount = 420;
+    const pointsCount = isMobile ? 160 : 420;
     const pointsPositions = new Float32Array(pointsCount * 3);
     for (let index = 0; index < pointsCount; index += 1) {
       const radius = 3.6 + Math.random() * 2.8;
@@ -193,11 +205,24 @@ export default function OrbitScene() {
     };
     document.addEventListener("visibilitychange", onVisibility);
 
+    /* Пауза, когда сцена ушла с экрана — экономим батарею на телефоне */
+    const onIntersect: IntersectionObserverCallback = ([entry]) => {
+      if (!entry) return;
+      if (entry.isIntersecting && !document.hidden) {
+        start();
+      } else {
+        stop();
+      }
+    };
+    const intersection = new IntersectionObserver(onIntersect, { threshold: 0.08 });
+    intersection.observe(mount);
+
     start();
 
     return () => {
       running = false;
       stop();
+      intersection.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
       mount.removeEventListener("pointermove", updatePointer);
