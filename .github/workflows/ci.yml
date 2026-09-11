@@ -61,9 +61,14 @@ jobs:
         run: npm run build
         working-directory: backend
 
-      - name: Smoke-тест health-check
+      - name: Smoke-тест health-check и приёма заявки (резервный режим без SMTP)
         run: |
           PORT=4100 node dist/index.js &
           sleep 2
           curl -fsS http://localhost:4100/api/health | grep '"status":"ok"'
+          curl -fsS -X POST http://localhost:4100/api/leads \
+            -H "Content-Type: application/json" \
+            -d '{"name":"CI Тест","email":"ci@test.dev","message":"Проверка приёма заявок"}' \
+            | grep '"ok":true'
+          grep '"email":"ci@test.dev"' data/leads.jsonl
         working-directory: backend

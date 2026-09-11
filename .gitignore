@@ -8,6 +8,9 @@ out/
 # backend build
 dist/
 
+# резервные заявки (backend/data/leads.jsonl)
+backend/data/
+
 # production
 /build
 

@@ -3,7 +3,8 @@ import rateLimit from "express-rate-limit";
 
 import { config } from "../config.js";
 import { leadSchema } from "../lib/lead-schema.js";
-import { createBitrixLead } from "../lib/bitrix.js";
+import { isMailConfigured, sendLeadEmail } from "../lib/mailer.js";
+import { saveLeadToFile } from "../lib/leads-store.js";
 
 const SUCCESS_MESSAGE =
   "Ваше сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.";
@@ -37,32 +38,33 @@ leadsRouter.post("/leads", leadLimiter, async (req, res) => {
   const payload = parsed.data;
 
   /* Honeypot: бот заполнил скрытое поле — отвечаем «успехом»,
-     не создавая лид и не раскрывая механику защиты. */
+     ничего не отправляя и не сохраняя. */
   if (payload.company && payload.company.trim().length > 0) {
     res.status(200).json({ ok: true, message: SUCCESS_MESSAGE });
     return;
   }
 
-  if (!config.bitrixWebhookUrl) {
-    console.error("BITRIX_WEBHOOK_URL is not configured");
-    res.status(503).json({
-      ok: false,
-      message:
-        "Сервис приёма заявок временно недоступен. Свяжитесь с нами по телефону или email.",
-    });
+  /* SMTP ещё не настроен — складываем заявку в резервный файл,
+     чтобы не потерять клиента до подключения почты. */
+  if (!isMailConfigured()) {
+    const file = await saveLeadToFile(payload);
+    console.warn(`SMTP не настроен — заявка сохранена в ${file} (${payload.email})`);
+    res.status(200).json({ ok: true, message: SUCCESS_MESSAGE });
     return;
   }
 
-  const result = await createBitrixLead(payload, config.bitrixWebhookUrl);
+  const result = await sendLeadEmail(payload);
 
   if (!result.ok) {
-    res.status(502).json({
-      ok: false,
-      message: "Не удалось отправить заявку. Попробуйте позже или позвоните нам.",
-    });
-    return;
+    /* Почта недоступна — заявку всё равно сохраняем и не теряем лид,
+       но громко логируем, чтобы администратор заметил сбой. */
+    const file = await saveLeadToFile(payload);
+    console.error(
+      `Письмо не ушло (${result.reason}) — заявка сохранена в ${file} (${payload.email})`,
+    );
+  } else {
+    console.log(`Заявка отправлена на ${config.mailTo} (${payload.email})`);
   }
 
-  console.log(`Lead created in Bitrix24: #${result.leadId} (${payload.email})`);
   res.status(200).json({ ok: true, message: SUCCESS_MESSAGE });
 });

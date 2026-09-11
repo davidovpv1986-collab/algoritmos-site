@@ -2,7 +2,7 @@
   "name": "algoritmos-backend",
   "version": "1.0.0",
   "private": true,
-  "description": "API-сервис сайта «Алгоритмос»: приём заявок и передача в Bitrix24",
+  "description": "API-сервис сайта «Алгоритмос»: приём заявок и отправка на почту (SMTP)",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -19,12 +19,14 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.4.1",
     "helmet": "^8.0.0",
+    "nodemailer": "^6.10.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
     "tsx": "^4.19.2",
     "typescript": "5.9.2"
   },

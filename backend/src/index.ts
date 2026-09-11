@@ -1,13 +1,19 @@
 import { createApp } from "./app.js";
 import { config } from "./config.js";
+import { isMailConfigured } from "./lib/mailer.js";
 
 const app = createApp();
 
 const server = app.listen(config.port, () => {
   console.log(`algoritmos-backend слушает порт ${config.port}`);
   console.log(`CORS: ${config.allowedOrigins.join(", ")}`);
-  if (!config.bitrixWebhookUrl) {
-    console.warn("ВНИМАНИЕ: BITRIX_WEBHOOK_URL не задан — заявки не будут создаваться в CRM");
+  if (isMailConfigured()) {
+    console.log(`Почта: заявки уходят на ${config.mailTo} через ${config.smtp.host}`);
+  } else {
+    console.warn(
+      "ВНИМАНИЕ: SMTP не настроен (SMTP_HOST/SMTP_USER/SMTP_PASS) — " +
+        "заявки будут сохраняться в data/leads.jsonl",
+    );
   }
 });
 
