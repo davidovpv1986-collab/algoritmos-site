@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Политика конфиденциальности",
   description:
     "Политика обработки персональных данных на сайте компании «Алгоритмос».",
-  alternates: { canonical: "/privacy" },
+  alternates: { canonical: "/privacy/" },
   robots: { index: true, follow: true },
 };
 

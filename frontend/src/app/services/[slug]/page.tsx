@@ -24,11 +24,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: service.title,
     description: service.excerpt,
-    alternates: { canonical: `/services/${service.slug}` },
+    alternates: { canonical: `/services/${service.slug}/` },
     openGraph: {
       title: `${service.title} — ${siteConfig.name}`,
       description: service.excerpt,
-      url: `${siteConfig.url}/services/${service.slug}`,
+      url: `${siteConfig.url}/services/${service.slug}/`,
       type: "article",
     },
   };
@@ -52,7 +52,7 @@ export default async function ServicePage({ params }: PageProps) {
         description: service.description,
         provider: { "@id": `${siteConfig.url}/#organization` },
         areaServed: ["RU", "BY", "KZ"],
-        url: `${siteConfig.url}/services/${service.slug}`,
+        url: `${siteConfig.url}/services/${service.slug}/`,
       },
       {
         "@type": "BreadcrumbList",
@@ -73,7 +73,7 @@ export default async function ServicePage({ params }: PageProps) {
             "@type": "ListItem",
             position: 3,
             name: service.title,
-            item: `${siteConfig.url}/services/${service.slug}`,
+            item: `${siteConfig.url}/services/${service.slug}/`,
           },
         ],
       },

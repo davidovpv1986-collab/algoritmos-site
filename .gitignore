@@ -1,9 +1,12 @@
 # dependencies
-/node_modules
+node_modules/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
+
+# backend build
+dist/
 
 # production
 /build
@@ -17,7 +20,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# env files (секреты не коммитим, шаблон — да)
+# env files (секреты не коммитим, шаблоны — да)
 .env*
 !.env.example
 

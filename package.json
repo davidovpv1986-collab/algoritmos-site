@@ -1,32 +1,16 @@
 {
-  "name": "algoritmos-site",
+  "name": "algoritmos",
   "version": "1.0.0",
   "private": true,
-  "description": "Официальный сайт ИТ-компании «Алгоритмос» — цифровые решения полного цикла",
+  "description": "Сайт ИТ-компании «Алгоритмос»: статический фронтенд + API-бэкенд для заявок",
   "scripts": {
-    "dev": "next dev -p 9020",
-    "build": "next build",
-    "start": "next start -p 9020",
-    "typecheck": "tsc --noEmit"
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "typecheck": "npm --prefix frontend run typecheck && npm --prefix backend run typecheck",
+    "start:backend": "npm --prefix backend run start"
   },
   "engines": {
     "node": ">=18.18.0"
-  },
-  "dependencies": {
-    "next": "^15.5.25",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "three": "^0.178.0",
-    "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@types/three": "^0.178.0",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17",
-    "typescript": "5.9.2"
   }
 }

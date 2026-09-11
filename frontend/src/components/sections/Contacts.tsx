@@ -1,13 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useActionState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { z } from "zod";
 
-import { sendLead, type LeadState } from "@/app/actions";
 import Reveal from "@/components/ui/Reveal";
 import { siteConfig } from "@/data/site";
+import { submitLead } from "@/lib/api";
 import { reachGoal, goals } from "@/lib/analytics";
 
-const initialState: LeadState = { message: "", error: false };
+/** Клиентская валидация повторяет серверную — мгновенная обратная связь. */
+const leadSchema = z.object({
+  name: z.string().trim().min(1, "Укажите имя").max(120),
+  email: z.string().trim().email("Некорректный email").max(200),
+  message: z.string().trim().min(1, "Сообщение не может быть пустым").max(5000),
+});
+
+type FormStatus =
+  | { state: "idle" }
+  | { state: "submitting" }
+  | { state: "success"; message: string }
+  | { state: "error"; message: string };
 
 const UTM_KEYS = [
   "utm_source",
@@ -56,18 +68,10 @@ const contactItems = [
 ];
 
 export default function Contacts() {
-  const [state, formAction, isPending] = useActionState(sendLead, initialState);
+  const [status, setStatus] = useState<FormStatus>({ state: "idle" });
   const formRef = useRef<HTMLFormElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const goalSentRef = useRef(false);
-
-  /* Сброс формы и цель Метрики после успешной отправки */
-  useEffect(() => {
-    if (state.message && !state.error) {
-      formRef.current?.reset();
-      reachGoal(goals.leadSuccess);
-    }
-  }, [state]);
 
   /* Цель «переход к контактам» — один раз при появлении секции */
   useEffect(() => {
@@ -98,6 +102,59 @@ export default function Contacts() {
       if (input && value) input.value = value;
     }
   }, []);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    const fields = {
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      message: String(data.get("message") ?? ""),
+    };
+
+    /* Мгновенная проверка на клиенте до обращения к API */
+    const parsed = leadSchema.safeParse(fields);
+    if (!parsed.success) {
+      setStatus({
+        state: "error",
+        message: parsed.error.issues.map((issue) => issue.message).join("\n"),
+      });
+      return;
+    }
+
+    reachGoal(goals.formOpen);
+    setStatus({ state: "submitting" });
+
+    /* Собираем payload: проверенные поля + honeypot + UTM-метки */
+    const payload = {
+      ...parsed.data,
+      company: String(data.get("company") ?? ""),
+      ...Object.fromEntries(
+        UTM_KEYS.map((key) => [key, String(data.get(key) ?? "")]),
+      ),
+    };
+
+    try {
+      const result = await submitLead(payload);
+      if (result.ok) {
+        form.reset();
+        reachGoal(goals.leadSuccess);
+        setStatus({ state: "success", message: result.message });
+      } else {
+        setStatus({ state: "error", message: result.message });
+      }
+    } catch {
+      setStatus({
+        state: "error",
+        message:
+          "Не удалось связаться с сервером. Проверьте соединение или позвоните нам.",
+      });
+    }
+  };
+
+  const isSubmitting = status.state === "submitting";
 
   return (
     <section id="contacts" ref={sectionRef} className="bg-base py-16 sm:py-24">
@@ -140,8 +197,7 @@ export default function Contacts() {
           <Reveal className="lg:col-span-7" delay={120}>
             <form
               ref={formRef}
-              action={formAction}
-              onSubmit={() => reachGoal(goals.formOpen)}
+              onSubmit={onSubmit}
               className="rounded-2xl border border-line bg-surface p-6 sm:p-8"
             >
               {/* UTM-метки передаются в CRM вместе с заявкой */}
@@ -202,26 +258,26 @@ export default function Contacts() {
               </div>
 
               <div aria-live="polite">
-                {state.message && (
+                {(status.state === "success" || status.state === "error") && (
                   <p
                     role="status"
-                    className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
-                      state.error
+                    className={`mt-4 whitespace-pre-line rounded-xl border px-4 py-3 text-sm ${
+                      status.state === "error"
                         ? "border-red-400/40 bg-red-400/10 text-red-200"
                         : "border-primary/40 bg-primary/10 text-light"
                     }`}
                   >
-                    {state.message}
+                    {status.message}
                   </p>
                 )}
               </div>
 
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isSubmitting}
                 className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-deep transition-all duration-200 hover:-translate-y-0.5 hover:bg-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
-                {isPending ? "Отправляем…" : "Отправить заявку"}
+                {isSubmitting ? "Отправляем…" : "Отправить заявку"}
               </button>
               <p className="mt-4 text-xs leading-relaxed text-muted">
                 Нажимая кнопку, вы соглашаетесь с{" "}
