@@ -10,6 +10,13 @@ const smtpPort = Number(process.env.SMTP_PORT ?? 465);
 
 export const config = {
   port: Number(process.env.PORT ?? 4000),
+  /** По умолчанию только localhost — снаружи доступ через nginx. */
+  host: process.env.HOST ?? "127.0.0.1",
+  /**
+   * Доверять X-Forwarded-For только за reverse-proxy.
+   * Иначе атакующий сбрасывает rate-limit поддельным заголовком.
+   */
+  trustProxy: process.env.TRUST_PROXY === "1" || process.env.TRUST_PROXY === "true",
   allowedOrigins,
   /** Лимит заявок с одного IP: 10 за 10 минут */
   rateLimit: { windowMs: 10 * 60 * 1000, max: 10 },

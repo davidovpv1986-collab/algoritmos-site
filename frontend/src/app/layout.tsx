@@ -6,6 +6,8 @@ import Footer from "@/components/layout/Footer";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import BackToTop from "@/components/ui/BackToTop";
 import YandexMetrika from "@/components/analytics/YandexMetrika";
+import CookieConsent from "@/components/analytics/CookieConsent";
+import { contentSecurityPolicy } from "@/lib/csp";
 import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -104,17 +106,15 @@ export default function RootLayout({
   return (
     <html lang="ru" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap"
-          rel="stylesheet"
-        />
+        <meta httpEquiv="Content-Security-Policy" content={contentSecurityPolicy()} />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
         />
         <a
           href="#main"
@@ -129,6 +129,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <BackToTop />
+        <CookieConsent />
         <YandexMetrika />
       </body>
     </html>

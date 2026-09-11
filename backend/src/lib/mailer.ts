@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 
 import { config } from "../config.js";
 import type { LeadPayload } from "./lead-schema.js";
+import { headerSafe } from "./sanitize.js";
 
 type MailResult = { ok: true } | { ok: false; reason: string };
 
@@ -62,6 +63,7 @@ function createTransporter() {
     auth: { user: config.smtp.user, pass: config.smtp.pass },
     connectionTimeout: 10_000,
     socketTimeout: 15_000,
+    tls: { minVersion: "TLSv1.2" },
   });
 }
 
@@ -90,7 +92,7 @@ function moscowNow(): string {
 }
 
 function safeDisplayName(name: string): string {
-  return name.replaceAll('"', "");
+  return headerSafe(name);
 }
 
 function phoneHref(phone: string): string {
@@ -306,13 +308,13 @@ export async function sendLeadEmail(payload: LeadPayload): Promise<MailResult> {
       from: `"Сайт ${COMPANY.name}" <${config.mailFrom}>`,
       to: config.mailTo,
       replyTo: `"${safeDisplayName(payload.name)}" <${payload.email}>`,
-      subject: `Заявка с сайта: ${payload.name}`,
+      subject: `Заявка с сайта: ${headerSafe(payload.name)}`,
       text: buildLeadText(payload, sentAt),
       html: buildLeadHtml(payload, sentAt),
     });
     return { ok: true };
   } catch (error) {
-    console.error("SMTP send error:", error);
+    console.error("SMTP send error");
     return { ok: false, reason: "smtp_error" };
   }
 }
@@ -327,13 +329,13 @@ export async function sendAutoReplyEmail(payload: LeadPayload): Promise<MailResu
       from: `"${COMPANY.name}" <${config.mailFrom}>`,
       to: `"${safeDisplayName(payload.name)}" <${payload.email}>`,
       replyTo: config.mailTo,
-      subject: `${firstName(payload.name)}, ваша заявка получена — ${COMPANY.name}`,
+      subject: `${headerSafe(firstName(payload.name))}, ваша заявка получена — ${COMPANY.name}`,
       text: buildAutoReplyText(payload),
       html: buildAutoReplyHtml(payload),
     });
     return { ok: true };
   } catch (error) {
-    console.error("SMTP auto-reply error:", error);
+    console.error("SMTP auto-reply error");
     return { ok: false, reason: "smtp_error" };
   }
 }

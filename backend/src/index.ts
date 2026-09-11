@@ -4,9 +4,10 @@ import { isMailConfigured } from "./lib/mailer.js";
 
 const app = createApp();
 
-const server = app.listen(config.port, () => {
-  console.log(`algoritmos-backend слушает порт ${config.port}`);
+const server = app.listen(config.port, config.host, () => {
+  console.log(`algoritmos-backend слушает ${config.host}:${config.port}`);
   console.log(`CORS: ${config.allowedOrigins.join(", ")}`);
+  console.log(`trust proxy: ${config.trustProxy ? "on" : "off"}`);
   if (isMailConfigured()) {
     console.log(`Почта: заявки уходят на ${config.mailTo} через ${config.smtp.host}`);
   } else {

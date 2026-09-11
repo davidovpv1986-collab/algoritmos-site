@@ -46,7 +46,7 @@ npm run typecheck  # проверка типов
 `out/` раздаётся любым статическим хостингом. Благодаря `trailingSlash`
 каждая страница — каталог с `index.html`, rewrite-правила не нужны.
 
-- **nginx**: `root /var/www/algoritmos/out; try_files $uri $uri/ =404;`
+- **nginx**: готовый конфиг с TLS и заголовками безопасности — [`deploy/nginx-frontend.conf`](../deploy/nginx-frontend.conf)
 - **GitHub Pages / Netlify / Vercel / S3+CDN** — из коробки.
 
 ## Структура

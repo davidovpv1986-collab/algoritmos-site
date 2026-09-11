@@ -98,6 +98,7 @@ const contactItems = [
 export default function Contacts() {
   const [status, setStatus] = useState<FormStatus>({ state: "idle" });
   const formRef = useRef<HTMLFormElement>(null);
+  const startedAtRef = useRef(Date.now());
   const sectionRef = useRef<HTMLElement>(null);
   const goalSentRef = useRef(false);
 
@@ -160,6 +161,7 @@ export default function Contacts() {
     const payload = {
       ...parsed.data,
       company: String(data.get("company") ?? ""),
+      startedAt: startedAtRef.current,
       ...Object.fromEntries(
         UTM_KEYS.map((key) => [key, String(data.get(key) ?? "")]),
       ),
@@ -169,6 +171,7 @@ export default function Contacts() {
       const result = await submitLead(payload);
       if (result.ok) {
         form.reset();
+        startedAtRef.current = Date.now();
         reachGoal(goals.leadSuccess);
         setStatus({ state: "success", message: result.message });
       } else {

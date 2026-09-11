@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 import { config } from "./config.js";
 import { leadsRouter } from "./routes/leads.js";
@@ -9,23 +10,41 @@ export function createApp() {
   const app = express();
 
   app.disable("x-powered-by");
-  app.set("trust proxy", 1);
+  app.set("trust proxy", config.trustProxy ? 1 : false);
 
-  /* Безопасные HTTP-заголовки */
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: false,
+        directives: { defaultSrc: ["'none'"] },
+      },
+      frameguard: { action: "deny" },
+      referrerPolicy: { policy: "no-referrer" },
+      hsts: { maxAge: 31_536_000, includeSubDomains: true },
+    }),
+  );
 
-  /* CORS: принимаем запросы только с фронтенда */
+  app.use(
+    rateLimit({
+      windowMs: 60_000,
+      max: 60,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: { ok: false, message: "Слишком много запросов. Подождите минуту." },
+    }),
+  );
+
   app.use(
     cors({
       origin(origin, callback) {
-        // Запросы без Origin (curl, health-checks, server-to-server) пропускаем
         if (!origin || config.allowedOrigins.includes(origin)) {
           callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
+          return;
         }
+        callback(new Error("Not allowed by CORS"));
       },
       methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type", "X-Requested-With"],
       maxAge: 86_400,
     }),
   );
@@ -33,17 +52,15 @@ export function createApp() {
   app.use(express.json({ limit: "10kb" }));
 
   app.get("/api/health", (_req, res) => {
-    res.json({ status: "ok", service: "algoritmos-backend" });
+    res.json({ status: "ok" });
   });
 
   app.use("/api", leadsRouter);
 
-  /* Неизвестные маршруты */
   app.use((_req, res) => {
     res.status(404).json({ ok: false, message: "Маршрут не найден" });
   });
 
-  /* Централизованная обработка ошибок — без утечки внутренних деталей */
   app.use(
     (
       error: Error,
@@ -55,7 +72,7 @@ export function createApp() {
         res.status(403).json({ ok: false, message: "Источник запроса не разрешён" });
         return;
       }
-      console.error("Unhandled error:", error);
+      console.error("Unhandled error");
       res.status(500).json({ ok: false, message: "Внутренняя ошибка сервера" });
     },
   );

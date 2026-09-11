@@ -26,7 +26,15 @@ jobs:
         run: npm run typecheck
         working-directory: frontend
 
+      - name: Аудит зависимостей
+        # postcss/sharp — только сборка Next, в out/ не попадают
+        run: npm audit --audit-level=critical
+        working-directory: frontend
+
       - name: Сборка статического сайта
+        env:
+          NEXT_PUBLIC_API_URL: https://api.algorithmos.ru
+          NEXT_PUBLIC_SITE_URL: https://algorithmos.ru
         run: npm run build
         working-directory: frontend
 
@@ -57,18 +65,24 @@ jobs:
         run: npm run typecheck
         working-directory: backend
 
+      - name: Аудит зависимостей
+        run: npm audit --audit-level=high
+        working-directory: backend
+
       - name: Компиляция TypeScript
         run: npm run build
         working-directory: backend
 
       - name: Smoke-тест health-check и приёма заявки (резервный режим без SMTP)
         run: |
-          PORT=4100 node dist/index.js &
+          PORT=4100 HOST=127.0.0.1 node dist/index.js &
           sleep 2
-          curl -fsS http://localhost:4100/api/health | grep '"status":"ok"'
-          curl -fsS -X POST http://localhost:4100/api/leads \
+          curl -fsS http://127.0.0.1:4100/api/health | grep '"status":"ok"'
+          STARTED=$(($(date +%s) * 1000 - 4000))
+          curl -fsS -X POST http://127.0.0.1:4100/api/leads \
             -H "Content-Type: application/json" \
-            -d '{"name":"CI Тест","email":"ci@test.dev","phone":"+7 (900) 123-45-67","message":"Проверка приёма заявок"}' \
+            -H "X-Requested-With: XMLHttpRequest" \
+            -d "{\"name\":\"CI Тест\",\"email\":\"ci@test.dev\",\"phone\":\"+7 (900) 123-45-67\",\"message\":\"Проверка приёма заявок\",\"startedAt\":${STARTED}}" \
             | grep '"ok":true'
           grep '"email":"ci@test.dev"' data/leads.jsonl
         working-directory: backend

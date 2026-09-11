@@ -12,6 +12,7 @@ export type LeadRequest = {
   phone: string;
   message: string;
   company?: string;
+  startedAt?: number;
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
@@ -27,10 +28,25 @@ export type LeadResponse = {
 export async function submitLead(data: LeadRequest): Promise<LeadResponse> {
   const response = await fetch(`${API_URL}/api/leads`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
     body: JSON.stringify(data),
   });
 
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) {
+    return {
+      ok: false,
+      message:
+        "Сервер временно недоступен. Позвоните нам или напишите на почту.",
+    };
+  }
+
   const result = (await response.json()) as LeadResponse;
+  if (!response.ok && result.ok !== false) {
+    return { ok: false, message: result.message || "Не удалось отправить заявку." };
+  }
   return result;
 }

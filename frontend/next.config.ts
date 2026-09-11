@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+if (process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_API_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_URL обязателен для production-сборки. Иначе в бандл попадёт localhost.",
+  );
+}
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   /* Полностью статический фронтенд: build → out/ (HTML/CSS/JS).

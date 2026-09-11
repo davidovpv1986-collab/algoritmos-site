@@ -13,7 +13,8 @@ algoritmos-site/
 │               # → собирается в чистый HTML/CSS/JS (frontend/out/)
 ├── backend/    # API-сервис: Node.js + Express + TypeScript
 │               # → приём заявок, валидация, отправка на почту (SMTP)
-└── .github/    # CI: typecheck + сборка обоих пакетов
+├── deploy/     # nginx: TLS, HSTS, CSP, прокси API
+└── .github/    # CI: typecheck + сборка + npm audit
 ```
 
 Фронтенд не зависит от рантайма Node.js и разворачивается на любом статическом
@@ -63,10 +64,18 @@ npm run build               # из корня: собирает оба паке�
 
 ## Переменные окружения
 
-**Backend** (`backend/.env`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `SITE_URL`, `PORT`, `FRONTEND_URL`.
-**Frontend** (`frontend/.env.local`): `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_YM_ID`.
+**Backend** (`backend/.env`): `SMTP_*`, `MAIL_TO`, `SITE_URL`, `PORT`, `HOST` (по умолчанию `127.0.0.1`), `TRUST_PROXY`, `FRONTEND_URL`.
+**Frontend** (`frontend/.env.local`): `NEXT_PUBLIC_API_URL` (обязателен в production-сборке), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_YM_ID`.
 
 Секреты живут только на сервере: `.env*` в `.gitignore`, в репозитории — только шаблоны `.env.example`.
+
+## Безопасность
+
+- HTTPS + HSTS, CSP, `X-Frame-Options`, `nosniff`, `Permissions-Policy` — шаблоны в [`deploy/`](deploy/).
+- Заявки: Zod, honeypot, антибот по времени заполнения, заголовок `X-Requested-With`, rate-limit, экранирование писем, без CR/LF в полях.
+- Бэкенд слушает localhost; `X-Forwarded-For` учитывается только при `TRUST_PROXY=true`.
+- Яндекс.Метрика — после согласия (152-ФЗ), без Webvisor. Шрифты со своего домена.
+- Контакты по уязвимостям: [info@algorithmos.ru](mailto:info@algorithmos.ru) (RFC 9116: `/.well-known/security.txt`).
 
 ## Контакты
 
