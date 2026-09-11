@@ -3,7 +3,11 @@ import rateLimit from "express-rate-limit";
 
 import { config } from "../config.js";
 import { leadSchema } from "../lib/lead-schema.js";
-import { isMailConfigured, sendLeadEmail } from "../lib/mailer.js";
+import {
+  isMailConfigured,
+  sendAutoReplyEmail,
+  sendLeadEmail,
+} from "../lib/mailer.js";
 import { saveLeadToFile } from "../lib/leads-store.js";
 
 const SUCCESS_MESSAGE =
@@ -64,6 +68,13 @@ leadsRouter.post("/leads", leadLimiter, async (req, res) => {
     );
   } else {
     console.log(`Заявка отправлена на ${config.mailTo} (${payload.email})`);
+
+    /* Автоответ клиенту: подтверждение получения заявки.
+       Его сбой не влияет на заявку — только логируем. */
+    const autoReply = await sendAutoReplyEmail(payload);
+    if (!autoReply.ok) {
+      console.error(`Автоответ клиенту не ушёл (${payload.email})`);
+    }
   }
 
   res.status(200).json({ ok: true, message: SUCCESS_MESSAGE });

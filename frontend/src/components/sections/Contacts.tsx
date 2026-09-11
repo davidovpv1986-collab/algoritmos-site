@@ -12,8 +12,36 @@ import { reachGoal, goals } from "@/lib/analytics";
 const leadSchema = z.object({
   name: z.string().trim().min(1, "Укажите имя").max(120),
   email: z.string().trim().email("Некорректный email").max(200),
+  phone: z
+    .string()
+    .trim()
+    .min(1, "Укажите телефон")
+    .max(30)
+    .refine((value) => {
+      if (!/^\+?[\d\s()-]+$/.test(value)) return false;
+      const digits = value.replace(/\D/g, "");
+      return digits.length >= 10 && digits.length <= 15;
+    }, "Некорректный номер телефона"),
   message: z.string().trim().min(1, "Сообщение не может быть пустым").max(5000),
 });
+
+/**
+ * Маска телефона +7 (XXX) XXX-XX-XX.
+ * Нормализует ввод: 8… → +7…, 9… → +7 9…, обрезает до 11 цифр.
+ */
+function formatPhoneInput(raw: string): string {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("8")) digits = `7${digits.slice(1)}`;
+  if (digits && !digits.startsWith("7")) digits = `7${digits}`;
+  digits = digits.slice(0, 11);
+  if (!digits) return "";
+  let result = "+7";
+  if (digits.length > 1) result += ` (${digits.slice(1, 4)}`;
+  if (digits.length >= 5) result += `) ${digits.slice(4, 7)}`;
+  if (digits.length >= 8) result += `-${digits.slice(7, 9)}`;
+  if (digits.length >= 10) result += `-${digits.slice(9, 11)}`;
+  return result;
+}
 
 type FormStatus =
   | { state: "idle" }
@@ -111,6 +139,7 @@ export default function Contacts() {
     const fields = {
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
+      phone: String(data.get("phone") ?? ""),
       message: String(data.get("message") ?? ""),
     };
 
@@ -229,19 +258,39 @@ export default function Contacts() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="mb-2 block text-sm font-bold text-foreground">
-                    Email
+                  <label htmlFor="phone" className="mb-2 block text-sm font-bold text-foreground">
+                    Телефон
                   </label>
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
+                    id="phone"
+                    name="phone"
+                    type="tel"
                     required
-                    autoComplete="email"
-                    placeholder="name@company.ru"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    onChange={(event) => {
+                      event.currentTarget.value = formatPhoneInput(
+                        event.currentTarget.value,
+                      );
+                    }}
                     className="w-full rounded-xl border border-line bg-deep px-4 py-3 text-sm text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
                   />
                 </div>
+              </div>
+              <div className="mt-4">
+                <label htmlFor="email" className="mb-2 block text-sm font-bold text-foreground">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="name@company.ru"
+                  className="w-full rounded-xl border border-line bg-deep px-4 py-3 text-sm text-foreground placeholder:text-muted/60 outline-none transition-colors focus:border-primary"
+                />
               </div>
               <div className="mt-4">
                 <label htmlFor="message" className="mb-2 block text-sm font-bold text-foreground">

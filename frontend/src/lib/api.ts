@@ -9,6 +9,7 @@ export const API_URL =
 export type LeadRequest = {
   name: string;
   email: string;
+  phone: string;
   message: string;
   company?: string;
   utm_source?: string;

@@ -68,7 +68,7 @@ jobs:
           curl -fsS http://localhost:4100/api/health | grep '"status":"ok"'
           curl -fsS -X POST http://localhost:4100/api/leads \
             -H "Content-Type: application/json" \
-            -d '{"name":"CI Тест","email":"ci@test.dev","message":"Проверка приёма заявок"}' \
+            -d '{"name":"CI Тест","email":"ci@test.dev","phone":"+7 (900) 123-45-67","message":"Проверка приёма заявок"}' \
             | grep '"ok":true'
           grep '"email":"ci@test.dev"' data/leads.jsonl
         working-directory: backend

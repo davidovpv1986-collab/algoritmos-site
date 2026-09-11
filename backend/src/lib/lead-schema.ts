@@ -1,11 +1,31 @@
 import { z } from "zod";
 
+/** Русские сообщения для отсутствующих/неверно типизированных полей. */
+const required = (message: string) => ({
+  required_error: message,
+  invalid_type_error: message,
+});
+
 /** Схема заявки — единая точка валидации входящих данных. */
 export const leadSchema = z.object({
-  name: z.string().trim().min(1, "Укажите имя").max(120),
-  email: z.string().trim().email("Некорректный email").max(200),
+  name: z.string(required("Укажите имя")).trim().min(1, "Укажите имя").max(120),
+  email: z
+    .string(required("Укажите email"))
+    .trim()
+    .email("Некорректный email")
+    .max(200),
+  phone: z
+    .string(required("Укажите телефон"))
+    .trim()
+    .min(1, "Укажите телефон")
+    .max(30)
+    .refine((value) => {
+      if (!/^\+?[\d\s()-]+$/.test(value)) return false;
+      const digits = value.replace(/\D/g, "");
+      return digits.length >= 10 && digits.length <= 15;
+    }, "Некорректный номер телефона"),
   message: z
-    .string()
+    .string(required("Расскажите о задаче"))
     .trim()
     .min(1, "Сообщение не может быть пустым")
     .max(5000),

@@ -27,4 +27,6 @@ export const config = {
   mailTo: process.env.MAIL_TO ?? "info@algorithmos.ru",
   /** От чьего имени отправляем (по умолчанию — SMTP_USER) */
   mailFrom: process.env.MAIL_FROM ?? process.env.SMTP_USER ?? "",
+  /** Публичный адрес сайта — для ссылок в автоответе клиенту */
+  siteUrl: process.env.SITE_URL ?? "https://algorithmos.ru",
 } as const;

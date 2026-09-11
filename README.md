@@ -63,7 +63,7 @@ npm run build               # из корня: собирает оба паке�
 
 ## Переменные окружения
 
-**Backend** (`backend/.env`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `PORT`, `FRONTEND_URL`.
+**Backend** (`backend/.env`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `SITE_URL`, `PORT`, `FRONTEND_URL`.
 **Frontend** (`frontend/.env.local`): `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_YM_ID`.
 
 Секреты живут только на сервере: `.env*` в `.gitignore`, в репозитории — только шаблоны `.env.example`.
