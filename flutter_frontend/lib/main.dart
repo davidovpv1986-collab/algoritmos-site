@@ -105,7 +105,7 @@ class _OrbitLandingPageState extends State<OrbitLandingPage>
                               compact: compact,
                               tablet: tablet,
                               orbit: reduceMotion
-                                  ? const AlwaysStoppedAnimation(0)
+                                  ? const AlwaysStoppedAnimation<double>(0)
                                   : _orbitController,
                               intro: _introController,
                             ),
@@ -312,7 +312,7 @@ class _Hero extends StatelessWidget {
       builder: (context, constraints) {
         if (tablet) return Column(children: [copy, const SizedBox(height: 28), art]);
         return SizedBox(
-          height: math.min(610, constraints.maxWidth * .46),
+          height: math.min(610.0, constraints.maxWidth * .46),
           child: Row(children: [Expanded(flex: 10, child: copy), const SizedBox(width: 18), Expanded(flex: 11, child: art)]),
         );
       },
